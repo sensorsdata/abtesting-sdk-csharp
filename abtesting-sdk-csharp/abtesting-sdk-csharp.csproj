@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageVersion>0.0.1</PackageVersion>
+    <Authors>zhangwei</Authors>
+    <Description> 支持 C# A/B Testing </Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="SensorsData.Analytics" />
+    <None Remove="Microsoft.Extensions.Caching.Memory" />
+    <None Remove="BitFaster.Caching" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="SensorsData.Analytics" Version="2.0.4" />
+    <PackageReference Include="BitFaster.Caching" Version="1.0.6" />
+  </ItemGroup>
+</Project>
