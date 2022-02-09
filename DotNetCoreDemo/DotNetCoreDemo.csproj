@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>DotNetCoreDemo</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\abtesting-sdk-csharp\abtesting-sdk-csharp.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="SensorsData.Analytics" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="SensorsData.Analytics" Version="2.0.4" />
+  </ItemGroup>
+ </Project>
