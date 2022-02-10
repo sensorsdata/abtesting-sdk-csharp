@@ -5,6 +5,12 @@
     <PackageVersion>0.0.1</PackageVersion>
     <Authors>zhangwei</Authors>
     <Description> 支持 C# A/B Testing </Description>
+    <Copyright>Sensors Data Co., Ltd</Copyright>
+    <PackageIconUrl>https://avatars1.githubusercontent.com/u/15683221?s=200&amp;v=4</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/sensorsdata/abtesting-sdk-csharp</PackageProjectUrl>
+    <PackageReleaseNotes>神策 CSharp A/B Testing SDK</PackageReleaseNotes>
+    <Summary>Sensors Data A/B Testing SDK</Summary>
+    <Title>Sensors Data A/B Testing SDK</Title>
   </PropertyGroup>
 
   <ItemGroup>
