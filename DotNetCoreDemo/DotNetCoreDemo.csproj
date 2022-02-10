@@ -11,12 +11,12 @@
     <Compile Remove="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\abtesting-sdk-csharp\abtesting-sdk-csharp.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="SensorsData.Analytics" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="SensorsData.Analytics" Version="2.0.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\abtesting-sdk-csharp\SensorsDataABTesting.csproj" />
   </ItemGroup>
  </Project>

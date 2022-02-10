@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.810.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "abtesting-sdk-csharp", "abtesting-sdk-csharp\abtesting-sdk-csharp.csproj", "{A8B07957-3DA8-4C24-B375-3306DDD7ADC7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorsDataABTesting", "abtesting-sdk-csharp\SensorsDataABTesting.csproj", "{A8B07957-3DA8-4C24-B375-3306DDD7ADC7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetCoreDemo", "DotNetCoreDemo\DotNetCoreDemo.csproj", "{78E815DF-6700-4612-9CC9-EBFCC7CBEC85}"
 EndProject

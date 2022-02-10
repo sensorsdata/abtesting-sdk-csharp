@@ -56,9 +56,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\abtesting-sdk-csharp\abtesting-sdk-csharp.csproj">
+    <ProjectReference Include="..\abtesting-sdk-csharp\SensorsDataABTesting.csproj">
       <Project>{A8B07957-3DA8-4C24-B375-3306DDD7ADC7}</Project>
-      <Name>abtesting-sdk-csharp</Name>
+      <Name>SensorsDataABTesting</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

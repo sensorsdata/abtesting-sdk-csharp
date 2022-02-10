@@ -11,6 +11,8 @@
     <PackageReleaseNotes>神策 CSharp A/B Testing SDK</PackageReleaseNotes>
     <Summary>Sensors Data A/B Testing SDK</Summary>
     <Title>Sensors Data A/B Testing SDK</Title>
+    <RootNamespace>SensorsData.ABTest</RootNamespace>
+    <AssemblyName>SensorsData.ABTesting</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
