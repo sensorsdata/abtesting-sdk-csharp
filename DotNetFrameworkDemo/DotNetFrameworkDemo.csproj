@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\abtesting-sdk-csharp\SensorsDataABTesting.csproj">
-      <Project>{A8B07957-3DA8-4C24-B375-3306DDD7ADC7}</Project>
+      <Project>{8F81DFB6-923D-4053-A4A0-AAFCE6A33FDF}</Project>
       <Name>SensorsDataABTesting</Name>
     </ProjectReference>
   </ItemGroup>

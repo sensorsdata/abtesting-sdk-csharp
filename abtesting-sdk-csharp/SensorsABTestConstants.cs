@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 namespace SensorsData.ABTest
 {
     public class SensorsABTestConstants
@@ -6,7 +6,7 @@ namespace SensorsData.ABTest
         ///网络请求需要的属性值
         public static readonly string PLATFORM = "platform";
         public static readonly string DOTNET = "DotNET";
-        public static readonly string VERSION = "0.0.1";
+        public static readonly string VERSION = "0.0.2";
         public static readonly string VERSION_KEY = "abtest_lib_version";
 
         //上报事件使用的key

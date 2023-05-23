@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using SensorsData.Analytics;
 
@@ -48,6 +49,8 @@ namespace SensorsData.ABTest.Bean
         public string platform { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public HttpABTestRequestProperties properties { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, object> custom_properties { get; set; }
     }
 
     public class HttpABTestRequestProperties

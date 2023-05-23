@@ -16,8 +16,10 @@ namespace SensorsData.ABTest
         /// <param name="defaultValue">默认值</param>
         /// <param name="enableAutoTrackEvent">是否自动上报 $ABTestTrigger 事件，默认值为 true</param>
         /// <param name="timeoutMilliseconds">网络请求超时，单位：ms，默认值为 3000</param>
+        /// <param name="properties">自定义属性，默认值为 null</param>
         /// <returns>试验结果</returns>
-        Experiement<T> AsyncFetchABTest<T>(string distinctId, bool isLoginId, string experimentVariableName, T defaultValue, bool enableAutoTrackEvent = true, int timeoutMilliseconds = 3000);
+        Experiement<T> AsyncFetchABTest<T>(string distinctId, bool isLoginId, string experimentVariableName, T defaultValue,
+            bool enableAutoTrackEvent = true, int timeoutMilliseconds = 3000, Dictionary<string, object> properties = null);
 
         /// <summary>
         /// 优先读取内存缓存，缓存不存在时从再服务端获取试验数据
@@ -29,8 +31,10 @@ namespace SensorsData.ABTest
         /// <param name="defaultValue">默认值，默认值为 null</param>
         /// <param name="enableAutoTrackEvent">是否自动上报 $ABTestTrigger 事件，默认值为 true</param>
         /// <param name="timeoutMilliseconds">网络请求超时，单位：ms，默认值为 3000</param>
+        /// <param name="properties">自定义属性，默认值为 null</param>
         /// <returns>试验结果</returns>
-        Experiement<T> FastFetchABTest<T>(string distinctId, bool isLoginId, string experimentVariableName, T defaultValue, bool enableAutoTrackEvent = true, int timeoutMilliseconds = 3000);
+        Experiement<T> FastFetchABTest<T>(string distinctId, bool isLoginId, string experimentVariableName, T defaultValue,
+            bool enableAutoTrackEvent = true, int timeoutMilliseconds = 3000, Dictionary<string, object> properties = null);
 
 
         /// <summary>
@@ -47,18 +51,19 @@ namespace SensorsData.ABTest
     {
 
         private readonly SensorsABTestManager sensorsABTestManager;
-        public SensorsABTest(ABTestConfig config) {
+        public SensorsABTest(ABTestConfig config)
+        {
             sensorsABTestManager = new SensorsABTestManager(config);
         }
 
-        public Experiement<T> AsyncFetchABTest<T>(string distinctId, bool isLoginId, string experimentVariableName, T defaultValue, bool enableAutoTrackEvent = true, int timeoutMilliseconds = 3000)
+        public Experiement<T> AsyncFetchABTest<T>(string distinctId, bool isLoginId, string experimentVariableName, T defaultValue, bool enableAutoTrackEvent = true, int timeoutMilliseconds = 3000, Dictionary<string, object> properties = null)
         {
-            return sensorsABTestManager.fetchABTest<T>(distinctId, isLoginId, experimentVariableName, defaultValue, enableAutoTrackEvent, timeoutMilliseconds, false);
+            return sensorsABTestManager.fetchABTest<T>(distinctId, isLoginId, experimentVariableName, defaultValue, enableAutoTrackEvent, timeoutMilliseconds, false, properties);
         }
 
-        public Experiement<T> FastFetchABTest<T>(string distinctId, bool isLoginId, string experimentVariableName, T defaultValue, bool enableAutoTrackEvent = true, int timeoutMilliseconds = 3000)
+        public Experiement<T> FastFetchABTest<T>(string distinctId, bool isLoginId, string experimentVariableName, T defaultValue, bool enableAutoTrackEvent = true, int timeoutMilliseconds = 3000, Dictionary<string, object> properties = null)
         {
-            return sensorsABTestManager.fetchABTest<T>(distinctId, isLoginId, experimentVariableName, defaultValue, enableAutoTrackEvent, timeoutMilliseconds, true);
+            return sensorsABTestManager.fetchABTest<T>(distinctId, isLoginId, experimentVariableName, defaultValue, enableAutoTrackEvent, timeoutMilliseconds, true, properties);
         }
 
         public void TrackABTestTriggerEvent<T>(Experiement<T> experiement, Dictionary<string, object> properties = null)

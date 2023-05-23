@@ -34,29 +34,30 @@ namespace SensorsData.ABTest
         /// <param name="enableAutoTrackEvent"></param>
         /// <param name="timeoutMilliseconds"></param>
         /// <param name="enableCache"> 默认为 true，表示先冲缓存中获取</param>
+        /// <param name="customProperties">自定义属性，默认值为 null</param>
         /// <returns></returns>
         public Experiement<T> fetchABTest<T>(string distinctId, bool isLoginId, string experimentVariableName,
-            T defaultValue, bool enableAutoTrackEvent = true, int timeoutMilliseconds = 3000, bool enableCache = true)
+            T defaultValue, bool enableAutoTrackEvent = true, int timeoutMilliseconds = 3000, bool enableCache = true, Dictionary<string, object> customProperties = null)
         {
-            if(timeoutMilliseconds <= 0)
+            if (timeoutMilliseconds <= 0)
             {
                 timeoutMilliseconds = 3000;
             }
             if (isEmpty(distinctId))
             {
-                Console.WriteLine("The distinctId is empty or null, return default value.");
+                SensorsABTestLogger.info("The distinctId is empty or null, return default value.");
                 return new Experiement<T>(distinctId, isLoginId, defaultValue);
             }
 
             if (isEmpty(experimentVariableName))
             {
-                Console.WriteLine("The experimentVariableName is empty or null, return default value.");
+                SensorsABTestLogger.info("The experimentVariableName is empty or null, return default value.");
                 return new Experiement<T>(distinctId, isLoginId, defaultValue);
             }
 
             if (!SensorsABTestUtils.AssertDefaultValueType(defaultValue))
             {
-                Console.WriteLine("The type of default value is not Number、String、Boolean or Json String, the the default value will be returned.");
+                SensorsABTestLogger.info("The type of default value is not Number、String、Boolean or Json String, the the default value will be returned.");
                 return new Experiement<T>(distinctId, isLoginId, defaultValue);
             }
             HttpABTestResult httpABTestResult;
@@ -67,8 +68,8 @@ namespace SensorsData.ABTest
                 //如果未命中
                 if (httpABTestResult == null)
                 {
-                    Console.WriteLine($"Not hit experiment cache, making network request.{distinctId}; {experimentVariableName}.");
-                    httpABTestResult = GetABTestByHttp(distinctId, isLoginId, timeoutMilliseconds, experimentVariableName);
+                    SensorsABTestLogger.info($"Not hit experiment cache, making network request.{distinctId}; {experimentVariableName}.");
+                    httpABTestResult = GetABTestByHttp(distinctId, isLoginId, timeoutMilliseconds, experimentVariableName, customProperties);
 
                     //缓存试验结果，只有 enableCache 时才会缓存试验结果
                     experimentCacheManager.SetExperimentResultCache(distinctId, isLoginId, httpABTestResult);
@@ -76,7 +77,7 @@ namespace SensorsData.ABTest
             }
             else
             {
-                httpABTestResult = GetABTestByHttp(distinctId, isLoginId, timeoutMilliseconds, experimentVariableName);
+                httpABTestResult = GetABTestByHttp(distinctId, isLoginId, timeoutMilliseconds, experimentVariableName, customProperties);
             }
 
             Experiement<T> result = convertExperiment(httpABTestResult, distinctId, isLoginId, experimentVariableName, defaultValue);
@@ -90,7 +91,7 @@ namespace SensorsData.ABTest
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine($"Failed auto track ABTest event.distinctId:{distinctId};isLoginId:{isLoginId};experimentVariableName:{experimentVariableName}");
+                    SensorsABTestLogger.info($"Failed auto track ABTest event.distinctId:{distinctId};isLoginId:{isLoginId};experimentVariableName:{experimentVariableName}");
                 }
             }
             return result;
@@ -100,19 +101,19 @@ namespace SensorsData.ABTest
         {
             if (experiement == null)
             {
-                Console.WriteLine("The track ABTest event experiment result is null.");
+                SensorsABTestLogger.info("The track ABTest event experiment result is null.");
                 return;
             }
             //如果在白名单中，就不触发
             if (experiement.isWhiteList == true || experiement.abTestExperimentId == null)
             {
-                Console.WriteLine($"The track ABTest event user not hit experiment or in the whiteList.distinctId:{experiement.distinctId}");
+                SensorsABTestLogger.info($"The track ABTest event user not hit experiment or in the whiteList.distinctId:{experiement.distinctId}");
                 return;
             }
             //如果缓存中已经存在，就不触发
             if (triggerEventCacheManager.IsEventCacheExist(experiement.distinctId, experiement.isLoginId, experiement.abTestExperimentId))
             {
-                Console.WriteLine($"The event has been triggered.distinctId:{experiement.distinctId}、experimentId:{experiement.abTestExperimentId}.");
+                SensorsABTestLogger.info($"The event has been triggered.distinctId:{experiement.distinctId}、experimentId:{experiement.abTestExperimentId}.");
                 return;
             }
             if (properties == null)
@@ -146,13 +147,13 @@ namespace SensorsData.ABTest
         {
             if (httpResult == null)
             {
-                Console.WriteLine($"The experiment result is null,return defaultValue：{defaultValue}");
+                SensorsABTestLogger.info($"The experiment result is null,return defaultValue：{defaultValue}");
                 return new Experiement<T>(distinctId, isLoginId, defaultValue);
             }
 
             if (!SensorsABTestConstants.SUCCESS.Equals(httpResult.status))
             {
-                Console.WriteLine($"The experiment result is error, error_type is {httpResult.error_type}, error_msg is {httpResult.error}.");
+                SensorsABTestLogger.info($"The experiment result is error, error_type is {httpResult.error_type}, error_msg is {httpResult.error}.");
                 return new Experiement<T>(distinctId, isLoginId, defaultValue);
             }
 
@@ -252,39 +253,46 @@ namespace SensorsData.ABTest
         /// <param name="distinctId"></param>
         /// <param name="isLoginId"></param>
         /// <param name="timeoutMilliseconds"></param>
+        /// <param name="experimentVariableName"></param>
+        /// <param name="customProperties"></param>
         /// <returns></returns>
-        private HttpABTestResult GetABTestByHttp(string distinctId, bool isLoginId, int timeoutMilliseconds, string experimentVariableName)
+        private HttpABTestResult GetABTestByHttp(string distinctId, bool isLoginId, int timeoutMilliseconds, string experimentVariableName, Dictionary<string, object> customProperties)
         {
-            HttpABTestRequest httpABTestRequest = new HttpABTestRequest();
-            if (isLoginId)
-            {
-                httpABTestRequest.login_id = distinctId;
-            }
-            else
-            {
-                httpABTestRequest.anonymous_id = distinctId;
-            }
-            //else
-            //{
-            //    httpABTestRequest.anonymous_id = distinctId;
-            //}
-            httpABTestRequest.platform = SensorsABTestConstants.DOTNET;
-            httpABTestRequest.abtest_lib_version = SensorsABTestConstants.VERSION;
-            httpABTestRequest.properties = new HttpABTestRequestProperties();
-            httpABTestRequest.param_name = experimentVariableName;
-
-            string content = JsonConvert.SerializeObject(httpABTestRequest);
             try
             {
+                HttpABTestRequest httpABTestRequest = new HttpABTestRequest();
+                if (isLoginId)
+                {
+                    httpABTestRequest.login_id = distinctId;
+                }
+                else
+                {
+                    httpABTestRequest.anonymous_id = distinctId;
+                }
+
+                httpABTestRequest.platform = SensorsABTestConstants.DOTNET;
+                httpABTestRequest.abtest_lib_version = SensorsABTestConstants.VERSION;
+                httpABTestRequest.properties = new HttpABTestRequestProperties();
+                Dictionary<string, object> newCustomProperties = SensorsABTestUtils.customPropertiesHandler(customProperties);
+                if (newCustomProperties != null && newCustomProperties.Count > 0)
+                {
+                    httpABTestRequest.custom_properties = newCustomProperties;
+                    httpABTestRequest.param_name = experimentVariableName;
+                }
+                string content = JsonConvert.SerializeObject(httpABTestRequest);
                 string result = httpManager.SendToServer(content, timeoutMilliseconds);
                 //Console.WriteLine($"Http request result: {result}");
                 return JsonConvert.DeserializeObject<HttpABTestResult>(result);
             }
+            catch (ArgumentException e)
+            {
+                SensorsABTestLogger.error($"Invalid custom properties, distinctid:{distinctId}, isLoginId:{isLoginId}, experimentName:{experimentVariableName}. Error messages:" + e.Message);
+            }
             catch (Exception e)
             {
-                Console.WriteLine("http request error:" + e.Message);
-                return null;
+                SensorsABTestLogger.error("http request error:" + e.Message);
             }
+            return null;
         }
 
         private bool isEmpty(string str)
@@ -351,7 +359,7 @@ namespace SensorsData.ABTest
         {
             if (experimentName == null || distinctId == null)
             {
-                Console.WriteLine($"distinctId: {distinctId}、isLoginId: {isLoginId} or experimentName: {experimentName} can not be null.");
+                SensorsABTestLogger.info($"distinctId: {distinctId}、isLoginId: {isLoginId} or experimentName: {experimentName} can not be null.");
                 return null;
             }
             HttpABTestResult cacheData;
@@ -377,7 +385,7 @@ namespace SensorsData.ABTest
                     }
                 }
             }
-            Console.WriteLine($"distinctId: {distinctId}、isLoginId: {isLoginId} or experimentName: {experimentName} not hit cache result.");
+            SensorsABTestLogger.info($"distinctId: {distinctId}、isLoginId: {isLoginId} or experimentName: {experimentName} not hit cache result.");
             return null;
         }
     }
